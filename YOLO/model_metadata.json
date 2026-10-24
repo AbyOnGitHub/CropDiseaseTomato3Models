@@ -1,0 +1,19 @@
+{
+    "project_name": "Tomato Leaf Disease Classification",
+    "model_architecture": "YOLO11n-cls",
+    "image_size": [
+        256,
+        256,
+        3
+    ],
+    "classes": [
+        "Early Blight",
+        "Healthy",
+        "Late Blight",
+        "Leaf Mold",
+        "Septoria Spot",
+        "Yellow Leaf Curl Virus"
+    ],
+    "test_accuracy": 0.998,
+    "framework": "Ultralytics YOLO11"
+}

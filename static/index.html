@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TomatoGuard AI - Multi-Model Tomato Disease Diagnostic Dashboard</title>
+    <meta name="description" content="Unified AI diagnostic dashboard for tomato leaf disease detection comparing YOLO11, Novel Inception CNN, and MobileViT Transformer with comprehensive farmer remediation measures.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Background glow elements -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <div class="dashboard-wrapper">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" stroke="#22c55e"/>
+                        <path d="M12 6c-3 0-5 2-5 5 0 4 5 7 5 7s5-3 5-7c0-3-2-5-5-5z" fill="#22c55e" fill-opacity="0.3"/>
+                        <path d="M12 2v4M8 4l2 3M16 4l-2 3" stroke="#4ade80"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1>TomatoGuard <span>AI</span></h1>
+                    <p>Unified Multi-Model Plant Pathology & Agronomic Advisory</p>
+                </div>
+            </div>
+
+            <div class="header-badges">
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span id="backend-status-text">Engine Online</span>
+                </div>
+                <button id="btn-browse-catalog" class="btn-ghost">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    Disease Catalog
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="main-layout">
+            <!-- Left Column: Controls & Upload -->
+            <section class="control-panel">
+                <!-- Model Selector Card -->
+                <div class="card model-selector-card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <span class="step-num">1</span>
+                            <h2>Select Classification Model</h2>
+                        </div>
+                        <span class="info-tag">3 Native Models</span>
+                    </div>
+
+                    <div class="model-pills" id="model-pills-container">
+                        <button class="model-pill active" data-model="yolo">
+                            <div class="pill-top">
+                                <span class="pill-icon">🚀</span>
+                                <span class="pill-name">YOLO11n-cls</span>
+                                <span class="pill-acc">99.8% Acc</span>
+                            </div>
+                            <div class="pill-sub">Ultralytics YOLO • 3.2M params • ~15ms</div>
+                        </button>
+
+                        <button class="model-pill" data-model="novel_cnn">
+                            <div class="pill-top">
+                                <span class="pill-icon">🧬</span>
+                                <span class="pill-name">Novel CNN</span>
+                                <span class="pill-acc">98.2% Acc</span>
+                            </div>
+                            <div class="pill-sub">Inception Residual • 597K params • ~20ms</div>
+                        </button>
+
+                        <button class="model-pill" data-model="mobilevit">
+                            <div class="pill-top">
+                                <span class="pill-icon">⚡</span>
+                                <span class="pill-name">MobileViT</span>
+                                <span class="pill-acc">98.6% Acc</span>
+                            </div>
+                            <div class="pill-sub">Vision Transformer • 1.3M params • ~90ms</div>
+                        </button>
+
+                        <button class="model-pill compare-pill" data-model="compare_all">
+                            <div class="pill-top">
+                                <span class="pill-icon">🌟</span>
+                                <span class="pill-name">Compare All 3</span>
+                                <span class="pill-badge">Consensus</span>
+                            </div>
+                            <div class="pill-sub">Run all 3 models & compare predictions</div>
+                        </button>
+                    </div>
+
+                    <div class="active-model-meta" id="active-model-meta">
+                        <div class="meta-row">
+                            <span class="meta-label">Selected Architecture:</span>
+                            <span class="meta-val" id="meta-arch-name">YOLO11 Nano Classification</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Framework & Runtime:</span>
+                            <span class="meta-val" id="meta-framework">Ultralytics YOLO / ONNX Runtime</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Optimal Use Case:</span>
+                            <span class="meta-val" id="meta-recommendation">Real-time edge & field deployment with highest overall accuracy.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Uploader Card -->
+                <div class="card uploader-card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <span class="step-num">2</span>
+                            <h2>Upload Leaf Image</h2>
+                        </div>
+                    </div>
+
+                    <!-- Dropzone -->
+                    <div class="dropzone" id="dropzone">
+                        <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" hidden>
+                        <div class="dropzone-content" id="dropzone-content">
+                            <div class="upload-icon-wrapper">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                            </div>
+                            <p class="drop-title">Drag & drop tomato leaf image here</p>
+                            <p class="drop-subtitle">or <button type="button" class="btn-browse" id="btn-browse">Browse Device</button></p>
+                            <span class="drop-formats">Supports JPG, PNG, WEBP (Max 15MB)</span>
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div class="preview-wrapper hidden" id="preview-wrapper">
+                            <img id="preview-img" alt="Leaf Preview" src="">
+                            <div class="preview-overlay">
+                                <span class="preview-info" id="preview-info">256 × 256</span>
+                                <button type="button" id="btn-clear-img" class="btn-clear" title="Remove image">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    Change
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Sample Picker -->
+                    <div class="sample-picker">
+                        <div class="sample-picker-title">
+                            <span>Or Test With Sample Disease Leaves:</span>
+                        </div>
+                        <div class="sample-chips" id="sample-chips">
+                            <button class="sample-chip" data-sample="/static/samples/sample_1_early_blight.jpg" title="Early Blight sample">Early Blight</button>
+                            <button class="sample-chip" data-sample="/static/samples/sample_2_healthy.jpg" title="Healthy sample">Healthy</button>
+                            <button class="sample-chip" data-sample="/static/samples/sample_3_late_blight.jpg" title="Late Blight sample">Late Blight</button>
+                            <button class="sample-chip" data-sample="/static/samples/sample_4_leaf_mold.jpg" title="Leaf Mold sample">Leaf Mold</button>
+                            <button class="sample-chip" data-sample="/static/samples/sample_5_septoria_spot.jpg" title="Septoria Spot sample">Septoria</button>
+                            <button class="sample-chip" data-sample="/static/samples/sample_6_yellow_curl.jpg" title="Yellow Leaf Curl Virus sample">TYLCV</button>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button id="btn-classify" class="btn-primary" disabled>
+                        <span class="btn-text">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            Run Disease Diagnosis
+                        </span>
+                        <span class="btn-loader hidden">
+                            <span class="spinner"></span>
+                            Analyzing Foliage...
+                        </span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Right Column: Diagnostic & Remediation Results -->
+            <section class="results-panel">
+                <!-- Initial Empty State -->
+                <div class="empty-state card" id="empty-state">
+                    <div class="empty-icon">🍃</div>
+                    <h3>Ready for Diagnosis</h3>
+                    <p>Select a model on the left, upload a tomato leaf image (or select a quick test sample), and click <strong>Run Disease Diagnosis</strong> to view instant predictions, probability breakdowns, and farmer remediation measures.</p>
+                    <div class="feature-badges">
+                        <span class="f-badge">✓ Real ONNX / PyTorch Inference</span>
+                        <span class="f-badge">✓ 6 Disease Classes</span>
+                        <span class="f-badge">✓ Integrated Farmer Remedies</span>
+                    </div>
+                </div>
+
+                <!-- Loading State Card -->
+                <div class="loading-state card hidden" id="loading-state">
+                    <div class="pulse-scanner">
+                        <div class="scan-beam"></div>
+                        <img id="scanning-img-preview" alt="Scanning" src="">
+                    </div>
+                    <h4>Deep Neural Inspection in Progress...</h4>
+                    <p id="loading-msg">Feeding tensor through convolutional backbone & attention layers...</p>
+                </div>
+
+                <!-- Single Model Results Container -->
+                <div class="results-container hidden" id="single-result-container">
+                    <!-- Hero Diagnosis Card -->
+                    <div class="card hero-result-card" id="hero-card">
+                        <div class="hero-top">
+                            <div class="diagnosis-status-badge" id="hero-status-badge">
+                                <span class="badge-dot"></span>
+                                <span id="hero-status-text">Disease Detected</span>
+                            </div>
+                            <div class="model-used-tag" id="hero-model-tag">YOLO11n-cls</div>
+                        </div>
+
+                        <div class="hero-body">
+                            <div class="hero-text-group">
+                                <span class="diagnosis-label">Primary Diagnosis</span>
+                                <h2 class="diagnosis-title" id="hero-disease-title">Tomato Early Blight</h2>
+                                <p class="diagnosis-pathogen" id="hero-pathogen">Alternaria solani • Fungal Pathogen</p>
+                            </div>
+
+                            <div class="hero-metrics">
+                                <div class="metric-gauge">
+                                    <svg viewBox="0 0 100 100" class="gauge-svg">
+                                        <circle class="gauge-bg" cx="50" cy="50" r="42"></circle>
+                                        <circle class="gauge-fill" id="gauge-circle" cx="50" cy="50" r="42"></circle>
+                                    </svg>
+                                    <div class="gauge-content">
+                                        <span class="gauge-val" id="hero-conf-val">98.4%</span>
+                                        <span class="gauge-lbl">Confidence</span>
+                                    </div>
+                                </div>
+                                <div class="metric-pill">
+                                    <span class="metric-pill-label">Latency:</span>
+                                    <span class="metric-pill-val" id="hero-latency">18.2 ms</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hero-summary" id="hero-summary-text">
+                            Common fungal disease causing dark brown spots with concentric target-board rings on older foliage.
+                        </div>
+                    </div>
+
+                    <!-- Probability Bars Card -->
+                    <div class="card prob-dist-card">
+                        <div class="card-header">
+                            <h3>Class Probability Distribution (All 6 Classes)</h3>
+                            <span class="sub-header-note">Softmax Output</span>
+                        </div>
+                        <div class="prob-list" id="prob-list">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Farmer Remediation Card -->
+                    <div class="card remediation-card" id="remediation-card">
+                        <div class="card-header remediation-header">
+                            <div class="remediation-title-box">
+                                <span class="agronomic-badge">🌾 Farmer Advisory & Action Plan</span>
+                                <h3>Remediation Measures & Field Protocol</h3>
+                            </div>
+                            <div class="remediation-tabs" id="remediation-tabs">
+                                <button class="rem-tab active" data-tab="symptoms">Symptoms & Identification</button>
+                                <button class="rem-tab" data-tab="cultural">Cultural & Organic</button>
+                                <button class="rem-tab" data-tab="chemical">Chemical Control</button>
+                                <button class="rem-tab" data-tab="preventive">Long-term Prevention</button>
+                            </div>
+                        </div>
+
+                        <!-- Tab Content 1: Symptoms -->
+                        <div class="tab-pane active" id="pane-symptoms">
+                            <div class="rem-section-header">
+                                <h4>Visual Symptoms & Environmental Factors</h4>
+                                <span class="env-condition" id="rem-favorable-cond">Warm and humid weather</span>
+                            </div>
+                            <ul class="remediation-checklist" id="rem-symptoms-list">
+                                <!-- Injected dynamically -->
+                            </ul>
+                        </div>
+
+                        <!-- Tab Content 2: Cultural -->
+                        <div class="tab-pane" id="pane-cultural">
+                            <div class="rem-split-grid">
+                                <div class="rem-subcol">
+                                    <h4>🚜 Immediate Cultural Practices</h4>
+                                    <ul class="remediation-checklist" id="rem-cultural-list"></ul>
+                                </div>
+                                <div class="rem-subcol">
+                                    <h4>🌿 Organic & Biological Solutions</h4>
+                                    <ul class="remediation-checklist organic" id="rem-organic-list"></ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab Content 3: Chemical -->
+                        <div class="tab-pane" id="pane-chemical">
+                            <div class="chemical-alert-box">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                <span>Always adhere to local agricultural regulations, PPE instructions, and strict Pre-Harvest Intervals (PHI).</span>
+                            </div>
+                            <ul class="remediation-checklist chemical" id="rem-chemical-list"></ul>
+                        </div>
+
+                        <!-- Tab Content 4: Prevention -->
+                        <div class="tab-pane" id="pane-preventive">
+                            <h4>🛡️ Long-term Field Management & Sanitation</h4>
+                            <ul class="remediation-checklist preventive" id="rem-preventive-list"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compare All 3 Models Container -->
+                <div class="compare-container hidden" id="compare-container">
+                    <div class="card consensus-hero-card">
+                        <div class="consensus-top">
+                            <span class="consensus-pill" id="consensus-agreement-badge">2/3 Models Agree</span>
+                            <span class="consensus-lbl">Majority Model Consensus</span>
+                        </div>
+                        <h2 class="consensus-disease" id="consensus-disease-title">Tomato Late Blight</h2>
+                        <p class="consensus-pathogen" id="consensus-pathogen">Phytophthora infestans</p>
+                        <div class="consensus-summary" id="consensus-summary">
+                            Consensus description here.
+                        </div>
+                    </div>
+
+                    <!-- 3-Column Comparison Grid -->
+                    <div class="models-tri-grid" id="models-tri-grid">
+                        <!-- YOLO Card -->
+                        <div class="card model-comp-card" id="comp-yolo-card">
+                            <div class="comp-card-header">
+                                <span class="comp-icon">🚀</span>
+                                <div>
+                                    <h4>YOLO11n-cls</h4>
+                                    <span class="comp-framework">Ultralytics YOLO</span>
+                                </div>
+                            </div>
+                            <div class="comp-pred-val" id="comp-yolo-pred">Tomato Late Blight</div>
+                            <div class="comp-conf-bar-wrapper">
+                                <div class="comp-conf-bar" id="comp-yolo-bar" style="width: 95%;"></div>
+                            </div>
+                            <div class="comp-meta-row">
+                                <span>Confidence: <strong id="comp-yolo-conf">95.4%</strong></span>
+                                <span>Latency: <strong id="comp-yolo-time">14.2ms</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Novel CNN Card -->
+                        <div class="card model-comp-card" id="comp-novel-card">
+                            <div class="comp-card-header">
+                                <span class="comp-icon">🧬</span>
+                                <div>
+                                    <h4>Novel CNN</h4>
+                                    <span class="comp-framework">Inception Residual</span>
+                                </div>
+                            </div>
+                            <div class="comp-pred-val" id="comp-novel-pred">Tomato Late Blight</div>
+                            <div class="comp-conf-bar-wrapper">
+                                <div class="comp-conf-bar" id="comp-novel-bar" style="width: 91%;"></div>
+                            </div>
+                            <div class="comp-meta-row">
+                                <span>Confidence: <strong id="comp-novel-conf">91.2%</strong></span>
+                                <span>Latency: <strong id="comp-novel-time">19.8ms</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- MobileViT Card -->
+                        <div class="card model-comp-card" id="comp-mvit-card">
+                            <div class="comp-card-header">
+                                <span class="comp-icon">⚡</span>
+                                <div>
+                                    <h4>MobileViT</h4>
+                                    <span class="comp-framework">Vision Transformer</span>
+                                </div>
+                            </div>
+                            <div class="comp-pred-val" id="comp-mvit-pred">Tomato Late Blight</div>
+                            <div class="comp-conf-bar-wrapper">
+                                <div class="comp-conf-bar" id="comp-mvit-bar" style="width: 88%;"></div>
+                            </div>
+                            <div class="comp-meta-row">
+                                <span>Confidence: <strong id="comp-mvit-conf">88.5%</strong></span>
+                                <span>Latency: <strong id="comp-mvit-time">85.4ms</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shared Consensus Remediation Card -->
+                    <div class="card remediation-card" id="compare-remediation-card">
+                        <!-- Injected dynamically from consensus -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Disease Catalog Modal -->
+        <div class="modal-backdrop hidden" id="catalog-modal">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <div class="modal-title-wrap">
+                        <h3>Tomato Leaf Pathology Encyclopedia</h3>
+                        <p>Complete Reference Guide for all 6 Classified Conditions</p>
+                    </div>
+                    <button class="btn-close" id="btn-close-modal">✕</button>
+                </div>
+                <div class="modal-body" id="catalog-content">
+                    <!-- Populated dynamically via /api/diseases -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p><strong>TomatoGuard AI</strong> • Powered by FastAPI & Tri-Model Pipeline (YOLO11n-cls, Novel Inception CNN, MobileViT-xx-small)</p>
+            <p class="footer-note">Designed for Agricultural Precision & Immediate Field Decision Support • Zero Mock Fallbacks</p>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

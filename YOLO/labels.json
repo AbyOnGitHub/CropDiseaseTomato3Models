@@ -1,0 +1,26 @@
+{
+    "0": {
+        "raw_name": "Tomato_Early_Blight",
+        "clean_name": "Early Blight"
+    },
+    "1": {
+        "raw_name": "Tomato_Healthy",
+        "clean_name": "Healthy"
+    },
+    "2": {
+        "raw_name": "Tomato_Late_Blight",
+        "clean_name": "Late Blight"
+    },
+    "3": {
+        "raw_name": "Tomato_Leaf_Mold",
+        "clean_name": "Leaf Mold"
+    },
+    "4": {
+        "raw_name": "Tomato_Septoria_Spot",
+        "clean_name": "Septoria Spot"
+    },
+    "5": {
+        "raw_name": "Tomato_Yellow_Leaf_Curl_Virus",
+        "clean_name": "Yellow Leaf Curl Virus"
+    }
+}
